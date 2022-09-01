@@ -1,0 +1,34 @@
+version: "3.3"
+services:
+  web-server:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    restart: always
+    volumes:
+      - "./html/:/var/www/html/"
+      - "./logs/:/var/log/apache2/"
+      - "./php/:/usr/local/etc/php/"
+    ports:
+      - "80:80"
+  mysql-server:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    environment:
+      PMA_HOST: mysql-server
+      PMA_USER: root
+      PMA_PASSWORD: root
+      UPLOAD_LIMIT: 128M
+    ports:
+      - "8080:80"
+volumes:
+  mysql-data:
